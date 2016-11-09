@@ -4,6 +4,7 @@ namespace Gui.Controllers
 {
     public class HomeController : Controller
     {
+        [Authorize]
         public ActionResult Index()
         {
             ViewBag.Message = "Your claims page";

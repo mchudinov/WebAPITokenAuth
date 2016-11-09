@@ -23,7 +23,7 @@ namespace Gui
             var principal = (ClaimsPrincipal)System.Web.HttpContext.Current.User;
             var bootstrapContext = (BootstrapContext)principal.Identities.First().BootstrapContext;
             var claims = principal.Claims;
-            var token = GetToken(bootstrapContext);
+            //var token = GetToken(bootstrapContext);
             var identity = principal.Identity;
             Debug.WriteLine("Session_Start. Identity name:" + identity.Name + " IsAuthenticated:" + identity.IsAuthenticated);
         }
