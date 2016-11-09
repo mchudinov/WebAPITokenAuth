@@ -61,7 +61,6 @@ namespace Gui
             var principal = (ClaimsPrincipal)System.Web.HttpContext.Current.User;
             var bootstrapContext = (BootstrapContext)principal.Identities.First().BootstrapContext;
             var claims = principal.Claims;
-            var token = GetToken(bootstrapContext);
         }
 
         private void CustomAuthenticationModule_SessionSecurityTokenCreated(object sender, SessionSecurityTokenCreatedEventArgs e)
@@ -92,15 +91,16 @@ namespace Gui
         public void CustomAuthenticationModule_SecurityTokenReceived(object sender, SecurityTokenReceivedEventArgs e)
         {
             var auth = (CustomWSFederationAuthenticationModule)sender;
+            string token = GetTokenAsXml(e.SecurityToken as Saml2SecurityToken);
             Debug.WriteLine("SecurityTokenReceived. SecurityToken:" + e.SecurityToken + " SignInContext:" + e.SignInContext);
         }
 
-        private static string GetToken(BootstrapContext bootstrapContext)
+        private static string GetTokenAsXml(Saml2SecurityToken securityToken)
         {
             var builder = new StringBuilder();
             using (var writer = XmlWriter.Create(builder))
             {
-                new Saml2SecurityTokenHandler(new SamlSecurityTokenRequirement()).WriteToken(writer, bootstrapContext.SecurityToken);
+                new Saml2SecurityTokenHandler(new SamlSecurityTokenRequirement()).WriteToken(writer, securityToken);
             }
             return builder.ToString();
         }
