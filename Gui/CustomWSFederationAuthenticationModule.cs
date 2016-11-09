@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Web;
 using System.Xml;
 
 namespace Gui
@@ -92,6 +93,7 @@ namespace Gui
         {
             var auth = (CustomWSFederationAuthenticationModule)sender;
             string token = GetTokenAsXml(e.SecurityToken as Saml2SecurityToken);
+            HttpContext.Current.Session["token"] = token;
             Debug.WriteLine("SecurityTokenReceived. SecurityToken:" + e.SecurityToken + " SignInContext:" + e.SignInContext);
         }
 
