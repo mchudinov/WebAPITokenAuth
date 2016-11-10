@@ -4,9 +4,6 @@ using System.IdentityModel.Services;
 using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Web;
-using System.Xml;
 
 namespace Gui
 {
@@ -62,6 +59,7 @@ namespace Gui
             var principal = (ClaimsPrincipal)System.Web.HttpContext.Current.User;
             var bootstrapContext = (BootstrapContext)principal.Identities.First().BootstrapContext;
             var claims = principal.Claims;
+            var token = bootstrapContext.SecurityToken;
         }
 
         private void CustomAuthenticationModule_SessionSecurityTokenCreated(object sender, SessionSecurityTokenCreatedEventArgs e)
@@ -92,19 +90,7 @@ namespace Gui
         public void CustomAuthenticationModule_SecurityTokenReceived(object sender, SecurityTokenReceivedEventArgs e)
         {
             var auth = (CustomWSFederationAuthenticationModule)sender;
-            string token = GetTokenAsXml(e.SecurityToken as Saml2SecurityToken);
-            HttpContext.Current.Session["token"] = token;
             Debug.WriteLine("SecurityTokenReceived. SecurityToken:" + e.SecurityToken + " SignInContext:" + e.SignInContext);
-        }
-
-        private static string GetTokenAsXml(Saml2SecurityToken securityToken)
-        {
-            var builder = new StringBuilder();
-            using (var writer = XmlWriter.Create(builder))
-            {
-                new Saml2SecurityTokenHandler(new SamlSecurityTokenRequirement()).WriteToken(writer, securityToken);
-            }
-            return builder.ToString();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace Api.App_Start
+namespace Api
 {
     public partial class Startup
     {
