@@ -1,6 +1,4 @@
-﻿using System.Configuration;
-
-namespace Api
+﻿namespace Api
 {
     public partial class Startup
     {
