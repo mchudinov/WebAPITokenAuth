@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.IdentityModel.Services;
 using System.IdentityModel.Tokens;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Authentication;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
@@ -14,13 +12,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace Api
 {
     public class TokenValidationHandler : DelegatingHandler
     {
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request.Headers.Authorization != null)
             {
@@ -79,18 +76,35 @@ namespace Api
 
         private static string Base64Decode(string base64EncodedData)
         {
-            var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
-            return Encoding.UTF8.GetString(base64EncodedBytes);
+            try
+            {
+                var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
+                return Encoding.UTF8.GetString(base64EncodedBytes);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private static Saml2SecurityToken GetSamlToken(string tokenXml)
         {
+            if (string.IsNullOrEmpty(tokenXml))
+                return null;
+
             var handlers = FederatedAuthentication.FederationConfiguration.IdentityConfiguration.SecurityTokenHandlers;
             Saml2SecurityToken token;
-            using (StringReader stringReader = new StringReader(tokenXml))
-            using (XmlTextReader xmlReader = new XmlTextReader(stringReader))
+            try
             {
-                token = (Saml2SecurityToken)handlers.ReadToken(xmlReader);
+                using (StringReader stringReader = new StringReader(tokenXml))
+                using (XmlTextReader xmlReader = new XmlTextReader(stringReader))
+                {
+                    token = (Saml2SecurityToken)handlers.ReadToken(xmlReader);
+                }
+            }
+            catch
+            {
+                return null;
             }
             return token;
         }
