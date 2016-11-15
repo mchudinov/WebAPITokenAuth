@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IdentityModel.Selectors;
 using System.IdentityModel.Services;
 using System.IdentityModel.Tokens;
 using System.IO;
@@ -6,7 +7,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
+using System.ServiceModel.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,11 +40,16 @@ namespace Api
                 if (encoded.StartsWith("Bearer"))
                     encoded = encoded.Replace("Bearer", "");
 
+                if (encoded.StartsWith("SAML"))
+                    encoded = encoded.Replace("SAML", "");
+                
                 string tokenXml = Base64Decode(encoded); 
                 
-                Saml2SecurityToken token = GetSamlToken(tokenXml);
+                Saml2SecurityToken samlToken = GetSamlToken(tokenXml);
 
-                if (null == token)
+                //ValidateSamlToken(samlToken);
+
+                if (null == samlToken)
                 {
                     return Task.Factory.StartNew(() => new HttpResponseMessage(HttpStatusCode.Unauthorized)
                     {
@@ -50,7 +58,7 @@ namespace Api
                 }
 
                 var handlers = FederatedAuthentication.FederationConfiguration.IdentityConfiguration.SecurityTokenHandlers;
-                ClaimsIdentity claimsIdentity = handlers.ValidateToken(token).FirstOrDefault();
+                ClaimsIdentity claimsIdentity = handlers.ValidateToken(samlToken).FirstOrDefault();
                 ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
                 SetPrincipal(principal);
             }
@@ -102,11 +110,31 @@ namespace Api
                     token = (Saml2SecurityToken)handlers.ReadToken(xmlReader);
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 return null;
             }
             return token;
         }
+
+        public static ClaimsIdentity ValidateSamlToken(SecurityToken securityToken)
+        {
+            var registry = new ConfigurationBasedIssuerNameRegistry();
+            registry.AddTrustedIssuer("115E38C827ACE56638E32935604C52AF83DFA544", "https://mikael.accesscontrol.windows.net/");
+
+            var configuration = new SecurityTokenHandlerConfiguration
+            {
+                AudienceRestriction = {AudienceMode = AudienceUriMode.Never},
+                CertificateValidationMode = X509CertificateValidationMode.None,
+                RevocationMode = X509RevocationMode.NoCheck,
+                CertificateValidator = X509CertificateValidator.None,
+                IssuerNameRegistry = registry
+            };
+
+            var handler = SecurityTokenHandlerCollection.CreateDefaultSecurityTokenHandlerCollection(configuration);
+            var identity = handler.ValidateToken(securityToken).First();
+            return identity;
+        }
+
     }
 }
