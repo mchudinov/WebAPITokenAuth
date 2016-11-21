@@ -144,10 +144,12 @@
     <Compile Include="CustomSessionAuthenticationModule .cs" />
     <Compile Include="CustomWSFederationAuthenticationModule.cs" />
     <Compile Include="Filters\TokenAuthorize.cs" />
-    <Compile Include="Filters\ValidateToken.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Error.cs" />
+    <Compile Include="Models\ErrorCode.cs" />
+    <Compile Include="Models\ErrorCodeEnumExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -167,9 +169,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -4,6 +4,8 @@ using System.IdentityModel.Services;
 using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Security.Claims;
+using System.Web;
+using System.Web.Mvc;
 
 namespace Gui
 {
@@ -87,10 +89,17 @@ namespace Gui
             Debug.WriteLine("AuthorizationFailed. RedirectToIdentityProvider:" + e.RedirectToIdentityProvider);
         }
 
-        public void CustomAuthenticationModule_SecurityTokenReceived(object sender, SecurityTokenReceivedEventArgs e)
+        private void CustomAuthenticationModule_SecurityTokenReceived(object sender, SecurityTokenReceivedEventArgs e)
         {
             var auth = (CustomWSFederationAuthenticationModule)sender;
             Debug.WriteLine("SecurityTokenReceived. SecurityToken:" + e.SecurityToken + " SignInContext:" + e.SignInContext);
+        }
+
+        protected override void OnRedirectingToIdentityProvider(RedirectingToIdentityProviderEventArgs e)
+        {
+            if ((new HttpRequestWrapper(HttpContext.Current.Request)).IsAjaxRequest())
+                e.Cancel = true;
+            base.OnRedirectingToIdentityProvider(e);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
-using System.Web.Mvc;
+using Gui.Models;
 
 namespace Gui.Filters
 {
@@ -19,13 +19,13 @@ namespace Gui.Filters
 
                 if (string.IsNullOrEmpty(header))
                 {
-                    actionContext.Response = request.CreateResponse(HttpStatusCode.Unauthorized, "Authorization header is empty");
+                    actionContext.Response = request.CreateResponse(ErrorCode.ACCESS_TOKEN_EMPTY.GetStatusCode(), new Error(ErrorCode.ACCESS_TOKEN_EMPTY));
                     return Task.FromResult<object>(null);
                 }
             }
             else
             {
-                actionContext.Response = request.CreateResponse(HttpStatusCode.Unauthorized, "The authorization header was not sent");
+                actionContext.Response = request.CreateResponse(ErrorCode.ACCESS_TOKEN_MISSING.GetStatusCode(), new Error(ErrorCode.ACCESS_TOKEN_MISSING));
                 return Task.FromResult<object>(null);
             }
 
