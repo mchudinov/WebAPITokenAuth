@@ -47,7 +47,7 @@ namespace Api
                 
                 Saml2SecurityToken samlToken = GetSamlToken(tokenXml);
 
-                //ValidateSamlToken(samlToken);
+                ValidateSamlToken(samlToken);
 
                 if (null == samlToken)
                 {

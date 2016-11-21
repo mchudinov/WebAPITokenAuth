@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Web.Http;
 
-namespace Api
+namespace Gui
 {
     public static class WebApiConfig
     {

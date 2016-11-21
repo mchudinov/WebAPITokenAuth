@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel.Security;
 using System.Text;
+using System.Web.Http;
 using System.Web.Routing;
 using System.Xml;
 using Newtonsoft.Json;
@@ -19,6 +20,7 @@ namespace Gui
     {
         protected void Application_Start()
         {
+            GlobalConfiguration.Configure(Gui.WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
 
@@ -27,7 +29,7 @@ namespace Gui
             var principal = (ClaimsPrincipal)System.Web.HttpContext.Current.User;
             var identity = principal.Identity;
             var bootstrapContext = (BootstrapContext)principal.Identities.First().BootstrapContext;
-            SaveTokenInSession(bootstrapContext.SecurityToken as Saml2SecurityToken);
+            //SaveTokenInSession(bootstrapContext.SecurityToken as Saml2SecurityToken);
             Debug.WriteLine("Session_Start. Identity name:" + identity.Name + " IsAuthenticated:" + identity.IsAuthenticated);
         }
 

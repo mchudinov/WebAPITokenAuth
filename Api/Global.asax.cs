@@ -6,7 +6,7 @@ namespace Api
     {
         protected void Application_Start()
         {
-            GlobalConfiguration.Configure(WebApiConfig.Register);
+            GlobalConfiguration.Configure(Api.WebApiConfig.Register);
             GlobalConfiguration.Configuration.MessageHandlers.Add(new TokenValidationHandler());
         }
     }

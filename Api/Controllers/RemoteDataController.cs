@@ -3,12 +3,11 @@ using System.Web.Http;
 
 namespace Api.Controllers
 {
-    public class DefaultController : ApiController
+    public class RemoteDataController : ApiController
     {
-        [Authorize]
         public IEnumerable<string> Get()
         {
-            return new [] { "value1", "value2" };
+            return new [] { "remote value1", "remote value2" };
         }
     }
 }

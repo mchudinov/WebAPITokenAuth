@@ -11,7 +11,7 @@ namespace Gui.Controllers
         {
             ViewBag.ClaimsIdentity = System.Web.HttpContext.Current.User.Identity;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost:63046/api/Default");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost:63046/api/RemoteData");
             request.Headers.Add("Authorization", "Bearer " + Session["token"]);
 
             try
