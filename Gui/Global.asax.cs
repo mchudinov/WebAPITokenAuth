@@ -9,14 +9,17 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel.Security;
 using System.Text;
+using System.Web;
 using System.Web.Http;
+using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web.Security;
 using System.Xml;
 using Newtonsoft.Json;
 
 namespace Gui
 {
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : HttpApplication
     {
         protected void Application_Start()
         {
@@ -31,6 +34,15 @@ namespace Gui
             var bootstrapContext = (BootstrapContext)principal.Identities.First().BootstrapContext;
             //SaveTokenInSession(bootstrapContext.SecurityToken as Saml2SecurityToken);
             Debug.WriteLine("Session_Start. Identity name:" + identity.Name + " IsAuthenticated:" + identity.IsAuthenticated);
+        }
+
+        protected void Application_EndRequest()
+        {
+            if (Context.Response.StatusCode == 302 && Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                Context.Response.Clear();
+                Context.Response.StatusCode = 401;
+            }
         }
 
         private void SaveTokenInSession(Saml2SecurityToken securityToken)
