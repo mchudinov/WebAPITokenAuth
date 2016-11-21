@@ -6,25 +6,25 @@ namespace Gui.Models
     public enum ErrorCode
     {
         #region AccessToken errors
-        [Description("Access token required")]
+        [Description("Authorization header is not send")]
         [StatusCode(HttpStatusCode.Unauthorized)]
-        ACCESS_TOKEN_MISSING,
+        SECURITY_TOKEN_MISSING,
 
-        [Description("Access token is empty")]
+        [Description("Authorization header is empty")]
         [StatusCode(HttpStatusCode.Unauthorized)]
-        ACCESS_TOKEN_EMPTY,
+        SECURITY_TOKEN_EMPTY,
 
-        [Description("Invalid token")]
+        [Description("Invalid security token")]
         [StatusCode(HttpStatusCode.Unauthorized)]
-        ACCESS_TOKEN_INVALID,
+        SECURITY_TOKEN_INVALID,
 
-        [Description("Expired token")]
+        [Description("Expired securty token")]
         [StatusCode(HttpStatusCode.Unauthorized)]
-        ACCESS_TOKEN_EXPIRED,
+        SECURITY_TOKEN_EXPIRED,
 
-        [Description("Unexpected error while validating token")]
+        [Description("Unexpected error while validating security token")]
         [StatusCode(HttpStatusCode.InternalServerError)]
-        ACCESS_TOKEN_VALIDATION_ERROR,
+        SECURITY_TOKEN_VALIDATION_ERROR,
         #endregion
     }
 
