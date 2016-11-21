@@ -19,13 +19,13 @@ namespace Gui.Filters
 
                 if (string.IsNullOrEmpty(header))
                 {
-                    actionContext.Response = request.CreateResponse(ErrorCode.ACCESS_TOKEN_EMPTY.GetStatusCode(), new Error(ErrorCode.ACCESS_TOKEN_EMPTY));
+                    actionContext.Response = request.CreateResponse(ErrorCode.SECURITY_TOKEN_EMPTY.GetStatusCode(), new Error(ErrorCode.SECURITY_TOKEN_EMPTY));
                     return Task.FromResult<object>(null);
                 }
             }
             else
             {
-                actionContext.Response = request.CreateResponse(ErrorCode.ACCESS_TOKEN_MISSING.GetStatusCode(), new Error(ErrorCode.ACCESS_TOKEN_MISSING));
+                actionContext.Response = request.CreateResponse(ErrorCode.SECURITY_TOKEN_MISSING.GetStatusCode(), new Error(ErrorCode.SECURITY_TOKEN_MISSING));
                 return Task.FromResult<object>(null);
             }
 
