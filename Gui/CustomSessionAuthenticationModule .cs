@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IdentityModel.Services;
+using System.Text;
+using System.Web;
+using System.Web.Caching;
+using Common;
 
 namespace Gui
 {
@@ -42,6 +46,8 @@ namespace Gui
 
         private void CustomAuthenticationModule_SessionSecurityTokenReceived(object sender, SessionSecurityTokenReceivedEventArgs e)
         {
+            System.Web.HttpContext.Current.Cache[e.SessionToken.Id] = e.SessionToken;
+            CookieHelper.SaveInSessionCookie("token", Base64.Encode(e.SessionToken.Id), HttpContext.Current);
             Debug.WriteLine("SessionSecurityTokenReceived. SessionSecurityToken:" + e.SessionToken.Id + " KeyExpirationTime:" + e.SessionToken.KeyExpirationTime); 
         }
     }

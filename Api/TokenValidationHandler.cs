@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
+using Common;
 
 namespace Api
 {
@@ -43,7 +44,7 @@ namespace Api
                 if (encoded.StartsWith("SAML"))
                     encoded = encoded.Replace("SAML", "");
                 
-                string tokenXml = Base64Decode(encoded); 
+                string tokenXml = Base64.Decode(encoded); 
                 
                 Saml2SecurityToken samlToken = GetSamlToken(tokenXml);
 
@@ -79,19 +80,6 @@ namespace Api
             if (HttpContext.Current != null)
             {
                 HttpContext.Current.User = principal;
-            }
-        }
-
-        private static string Base64Decode(string base64EncodedData)
-        {
-            try
-            {
-                var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
-                return Encoding.UTF8.GetString(base64EncodedBytes);
-            }
-            catch
-            {
-                return null;
             }
         }
 

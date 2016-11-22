@@ -1,11 +1,10 @@
-﻿using System;
+﻿using System.IdentityModel.Tokens;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using Common;
 using Gui.Models;
 
 namespace Gui.Filters
@@ -33,7 +32,35 @@ namespace Gui.Filters
                 if (encoded.StartsWith("SAML"))
                     encoded = encoded.Replace("SAML", "");
 
-                string tokenXml = Base64Decode(encoded);
+                string token = Base64.Decode(encoded);
+                if (string.IsNullOrEmpty(header))
+                {
+                    actionContext.Response = request.CreateResponse(ErrorCode.SECURITY_TOKEN_INVALID.GetStatusCode(), new Error(ErrorCode.SECURITY_TOKEN_INVALID));
+                    return Task.FromResult<object>(null);
+                }
+
+                SessionSecurityToken sessiontoken;
+                try
+                {
+                    sessiontoken = System.Web.HttpContext.Current.Cache[token] as SessionSecurityToken;
+                }
+                catch
+                {
+                    actionContext.Response = request.CreateResponse(ErrorCode.SECURITY_TOKEN_VALIDATION_ERROR.GetStatusCode(), new Error(ErrorCode.SECURITY_TOKEN_VALIDATION_ERROR));
+                    return Task.FromResult<object>(null);
+                }
+
+                if (null == sessiontoken)
+                {
+                    actionContext.Response = request.CreateResponse(ErrorCode.SECURITY_TOKEN_INVALID.GetStatusCode(), new Error(ErrorCode.SECURITY_TOKEN_INVALID));
+                    return Task.FromResult<object>(null);
+                }
+
+                if (SecurityTokenHelper.IsTokenExpired(sessiontoken))
+                {
+                    actionContext.Response = request.CreateResponse(ErrorCode.SECURITY_TOKEN_EXPIRED.GetStatusCode(), new Error(ErrorCode.SECURITY_TOKEN_EXPIRED));
+                    return Task.FromResult<object>(null);
+                }
             }
             else
             {
@@ -42,19 +69,6 @@ namespace Gui.Filters
             }
 
             return Task.FromResult<object>(null);
-        }
-
-        private static string Base64Decode(string base64EncodedData)
-        {
-            try
-            {
-                var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
-                return Encoding.UTF8.GetString(base64EncodedBytes);
-            }
-            catch
-            {
-                return null;
-            }
         }
     }
 }
