@@ -32,19 +32,35 @@ namespace Gui
             var principal = (ClaimsPrincipal)System.Web.HttpContext.Current.User;
             var identity = principal.Identity;
             var bootstrapContext = (BootstrapContext)principal.Identities.First().BootstrapContext;
-            //SaveTokenInSession(bootstrapContext.SecurityToken as Saml2SecurityToken);
+            //SaveTokenInSession(bootstrapContext);
+            //SaveTokenInCookie(bootstrapContext);
             Debug.WriteLine("Session_Start. Identity name:" + identity.Name + " IsAuthenticated:" + identity.IsAuthenticated);
         }
 
-        private void SaveTokenInSession(Saml2SecurityToken securityToken)
+        private void SaveTokenInCookie(BootstrapContext bootstrapContext)
         {
-            string token = GetTokenAsXml(securityToken);
+            string token = GetTokenAsXml(bootstrapContext);
+            string tokenBase64 = Base64Encode(token);
+            HttpContext.Current.Response.Cookies.Add(new HttpCookie("token")
+            {
+                Value = tokenBase64,
+                Expires = DateTime.Now.AddHours(1)
+            });
+        }
+
+        private void SaveTokenInSession(BootstrapContext bootstrapContext)
+        {
+            string token = GetTokenAsXml(bootstrapContext);
             string tokenBase64 = Base64Encode(token);
             Session["token"] = tokenBase64;
         }
 
-        private static string GetTokenAsXml(Saml2SecurityToken securityToken)
+        private static string GetTokenAsXml(BootstrapContext bootstrapContext)
         {
+            if (!string.IsNullOrEmpty(bootstrapContext.Token))
+                return bootstrapContext.Token;
+
+             Saml2SecurityToken securityToken = bootstrapContext.SecurityToken as Saml2SecurityToken;
             var builder = new StringBuilder();
             using (var writer = XmlWriter.Create(builder))
             {

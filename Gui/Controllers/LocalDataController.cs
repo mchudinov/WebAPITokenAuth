@@ -7,6 +7,7 @@ namespace Gui.Controllers
     public class LocalDataController : ApiController
     {
         [TokenAuthorize]
+        //[Authorize]
         public IEnumerable<string> Get()
         {
             return new[] { "local value1", "local value2" };

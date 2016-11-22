@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IdentityModel.Services;
 using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml;
 
 namespace Gui
 {
@@ -62,6 +65,8 @@ namespace Gui
             var bootstrapContext = (BootstrapContext)principal.Identities.First().BootstrapContext;
             var claims = principal.Claims;
             var token = bootstrapContext.SecurityToken;
+            SaveTokenInCookie(bootstrapContext);
+            //SaveTokenInSession(bootstrapContext);
         }
 
         private void CustomAuthenticationModule_SessionSecurityTokenCreated(object sender, SessionSecurityTokenCreatedEventArgs e)
@@ -100,6 +105,61 @@ namespace Gui
             if ((new HttpRequestWrapper(HttpContext.Current.Request)).IsAjaxRequest())
                 e.Cancel = true;
             base.OnRedirectingToIdentityProvider(e);
+        }
+
+        private void SaveTokenInCookie(BootstrapContext bootstrapContext)
+        {
+            string token = GetTokenAsXml(bootstrapContext);
+            string tokenBase64 = Base64Encode(token);
+
+            var chunks = SplitString(tokenBase64, 2000);
+            for (int i = 0; i < chunks.Count(); i++)
+            {
+                SaveCookieInternal("token"+i, chunks.ElementAt(i));
+            }
+        }
+
+        static IEnumerable<string> SplitString(string str, int chunkSize)
+        {
+            return Enumerable.Range(0, str.Length / chunkSize).Select(i => str.Substring(i * chunkSize, chunkSize));
+        }
+
+        private void SaveCookieInternal(string name, string value)
+        {
+            HttpContext context = HttpContext.Current;
+            HttpCookie cookie = new HttpCookie(name, value)
+            {
+                Expires = DateTime.Now.AddYears(1)
+            };
+            context.Request.Headers.Add("Cookie", name + "=" + cookie.Value);
+            context.Response.Cookies.Add(cookie);
+        }
+
+        private void SaveTokenInSession(BootstrapContext bootstrapContext)
+        {
+            string token = GetTokenAsXml(bootstrapContext);
+            string tokenBase64 = Base64Encode(token);
+            HttpContext.Current.Session["token"] = tokenBase64;
+        }
+
+        private static string GetTokenAsXml(BootstrapContext bootstrapContext)
+        {
+            if (!string.IsNullOrEmpty(bootstrapContext.Token))
+                return bootstrapContext.Token;
+
+            Saml2SecurityToken securityToken = bootstrapContext.SecurityToken as Saml2SecurityToken;
+            var builder = new StringBuilder();
+            using (var writer = XmlWriter.Create(builder))
+            {
+                new Saml2SecurityTokenHandler(new SamlSecurityTokenRequirement()).WriteToken(writer, securityToken);
+            }
+            return builder.ToString();
+        }
+
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
         }
     }
 }
