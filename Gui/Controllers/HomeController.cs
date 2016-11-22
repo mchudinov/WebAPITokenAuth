@@ -14,7 +14,7 @@ namespace Gui.Controllers
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost:63046/api/RemoteData");
             request.Headers.Add("Authorization", "Bearer " + Session["token"]);
 
-            try
+            /*try
             {
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
@@ -39,7 +39,7 @@ namespace Gui.Controllers
                         ViewBag.ResponseCode = (int)response.StatusCode;
                     }
                 }
-            }
+            }*/
             
             return View();
         }
