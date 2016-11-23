@@ -33,7 +33,7 @@ namespace Gui.Filters
                     encoded = encoded.Replace("SAML", "");
 
                 string token = Base64.Decode(encoded);
-                if (string.IsNullOrEmpty(header))
+                if (string.IsNullOrEmpty(token))
                 {
                     actionContext.Response = request.CreateResponse(ErrorCode.SECURITY_TOKEN_INVALID.GetStatusCode(), new Error(ErrorCode.SECURITY_TOKEN_INVALID));
                     return Task.FromResult<object>(null);
