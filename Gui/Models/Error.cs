@@ -9,8 +9,9 @@
     /// </summary>
     public class Error
     {
-        public Error(ErrorCode errorCode)
+        public Error(ErrorCode? errorCode)
         {
+            if (errorCode == null) return;
             Code = errorCode.ToString();
             Description = errorCode.GetDescription();
         }

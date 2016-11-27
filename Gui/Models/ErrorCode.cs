@@ -6,13 +6,9 @@ namespace Gui.Models
     public enum ErrorCode
     {
         #region AccessToken errors
-        [Description("Authorization header was not sent")]
+        [Description("Authorization header was not sent or empty")]
         [StatusCode(HttpStatusCode.Unauthorized)]
         SECURITY_TOKEN_MISSING,
-
-        [Description("Authorization header is empty")]
-        [StatusCode(HttpStatusCode.Unauthorized)]
-        SECURITY_TOKEN_EMPTY,
 
         [Description("Invalid security token")]
         [StatusCode(HttpStatusCode.Unauthorized)]

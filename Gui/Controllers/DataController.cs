@@ -4,13 +4,12 @@ using Gui.Filters;
 
 namespace Gui.Controllers
 {
-    public class LocalDataController : ApiController
+    public class DataController : ApiController
     {
         [TokenAuthorize]
-        //[Authorize]
         public IEnumerable<string> Get()
         {
-            return new[] { "local value1", "local value2" };
+            return new[] { "value1", "value2" };
         }
     }
 }

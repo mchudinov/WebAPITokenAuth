@@ -139,14 +139,15 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\LocalDataController.cs" />
+    <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="CustomSessionAuthenticationModule .cs" />
-    <Compile Include="CustomWSFederationAuthenticationModule.cs" />
+    <Compile Include="Federation\CustomWSFederationAuthenticationModule.cs" />
     <Compile Include="Filters\TokenAuthorize.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CookieHelper.cs" />
+    <Compile Include="Helpers\SecurityTokenHelper.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\ErrorCode.cs" />
     <Compile Include="Models\ErrorCodeEnumExtension.cs" />
@@ -168,12 +169,6 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{5887b162-b801-40d2-8ce2-0e2e04d5994c}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
