@@ -1,10 +1,7 @@
 ﻿@{
     ViewBag.Title = "Claims";
 }
-<script>
-    //$.get("/api/localData");
-    //var token = Session["token"]
-</script>
+<script type="text/javascript" src="~/Scripts/jquery-3.1.1.min.js"></script>
 <hgroup class="title">
     <h1>@ViewBag.Title.</h1>
     <h2>Your claims page</h2>
@@ -51,3 +48,49 @@
     }
 </table>
 
+<br/>
+<button onclick="callService()">Call Service</button>
+<br />
+Token: <label id="token"></label>
+<br />
+Result: <label id="result"></label> 
+
+<script type="text/javascript">
+    function readCookie(name) {
+        var nameEq = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEq) == 0) return c.substring(nameEq.length, c.length);
+        }
+        return null;
+    }
+
+    function callService() {
+        var token = readCookie("token");
+        $("#token").text(token);
+        $.get("", function (data) {
+            $("#result").text(data);
+        })
+        .fail(function (data) {
+            $("#result").text(data.responseText);
+        });
+
+        $.ajax
+        ({
+            type: "GET",
+            url: "/api/data",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            success: function (data) {
+                $("#result").text(data + "");
+            },
+            error: function (data) {
+                $("#result").text(data.responseText);
+            }
+        });
+
+    }
+</script>

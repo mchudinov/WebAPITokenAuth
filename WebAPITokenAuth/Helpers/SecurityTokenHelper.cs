@@ -52,9 +52,13 @@ namespace Gui.Helpers
             SecurityToken token = null;
             string key = GetKeyFromRequest(request, out error);
 
+            if (null != error)
+                return null;
+
             if (string.IsNullOrEmpty(key))
             {
                 error = ErrorCode.SECURITY_TOKEN_INVALID;
+                return null;
             }
 
             try
@@ -64,16 +68,19 @@ namespace Gui.Helpers
             catch
             {
                 error = ErrorCode.SECURITY_TOKEN_VALIDATION_ERROR;
+                return null;
             }
 
             if (null == token)
             {
                 error = ErrorCode.SECURITY_TOKEN_INVALID;
+                return null;
             }
 
             if (IsTokenExpired(token))
             {
                 error = ErrorCode.SECURITY_TOKEN_EXPIRED;
+                return null;
             }
 
             return token;
