@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gui", "Gui\Gui.csproj", "{B5138A72-BA61-4A97-9D0B-3C604A5C3887}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPITokenAuth", "WebAPITokenAuth\WebAPITokenAuth.csproj", "{B5138A72-BA61-4A97-9D0B-3C604A5C3887}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
