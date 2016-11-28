@@ -10,7 +10,7 @@ namespace Gui.Helpers
     {
         private static bool IsTokenExpired(SecurityToken token)
         {
-            return token != null && (DateTime.Now > token.ValidFrom && DateTime.Now < token.ValidTo);
+            return token == null || (DateTime.UtcNow < token.ValidFrom || DateTime.UtcNow > token.ValidTo);
         }
 
         public static void SaveTokenInCache(SecurityToken token, string key)

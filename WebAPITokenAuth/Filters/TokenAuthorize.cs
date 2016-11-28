@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using Gui.Controllers;
 using Gui.Helpers;
 using Gui.Models;
 
@@ -19,6 +20,11 @@ namespace Gui.Filters
                 actionContext.Response = actionContext.Request.CreateResponse(errorCode.GetStatusCode(), new Error(errorCode));
                 return Task.FromResult<object>(null);
             }
+
+            var controller = actionContext.ControllerContext.Controller;
+            ((BaseApiController)controller).SecurityToken = token;
+            //((BaseApiController)controller).TokenKey = key;
+
             actionContext.Request.Properties.Add("token", token);
             return Task.FromResult<object>(null);
         }

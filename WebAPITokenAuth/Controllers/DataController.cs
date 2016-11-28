@@ -4,9 +4,10 @@ using Gui.Filters;
 
 namespace Gui.Controllers
 {
-    public class DataController : ApiController
+    public class DataController : BaseApiController
     {
         [TokenAuthorize]
+        [SessionSliding]
         public IEnumerable<string> Get()
         {
             return new[] { "value1", "value2" };

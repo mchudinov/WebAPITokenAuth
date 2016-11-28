@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IdentityModel.Services;
 using System.Web;
 using System.Web.Mvc;
@@ -22,8 +23,7 @@ namespace Gui.Federation
             string key = SecurityTokenHelper.GetKey();
             SecurityTokenHelper.SaveTokenInCache(e.SecurityToken, key);
             CookieHelper.SaveSessionCookie("token", key, HttpContext.Current);
-
-            Debug.WriteLine($"SecurityTokenReceived. SecurityToken ID: {e.SecurityToken.Id} + key: {key} Valid from: {e.SecurityToken.ValidFrom}");
+            Debug.WriteLine($"SecurityTokenReceived. SecurityToken ID: {e.SecurityToken.Id}, key: {key}");
         }
 
         protected override void OnRedirectingToIdentityProvider(RedirectingToIdentityProviderEventArgs e)
