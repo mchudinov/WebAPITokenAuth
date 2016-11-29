@@ -5,7 +5,6 @@ namespace Gui.Controllers
 {
     public abstract class BaseApiController : ApiController
     {
-        public string TokenKey { get; set; }
         public SecurityToken SecurityToken { get; set; }
     }
 }

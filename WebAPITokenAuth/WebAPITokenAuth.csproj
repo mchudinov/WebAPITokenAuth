@@ -142,7 +142,6 @@
     <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Federation\CustomWSFederationAuthenticationModule.cs" />
-    <Compile Include="Filters\SessionSliding.cs" />
     <Compile Include="Filters\TokenAuthorize.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
