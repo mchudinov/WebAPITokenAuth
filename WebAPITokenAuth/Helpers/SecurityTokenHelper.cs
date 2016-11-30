@@ -16,7 +16,7 @@ namespace Gui.Helpers
 
         public static void SaveTokenInCache(SecurityToken token, string key)
         {
-            int expirationMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["KeyCacheExpiration"]);
+            int expirationMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["KeyCacheExpirationMinutes"]);
             HttpRuntime.Cache.Add(key, token, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, expirationMinutes, 0), System.Web.Caching.CacheItemPriority.Normal, null);
         }
 
