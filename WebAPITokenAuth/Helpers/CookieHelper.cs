@@ -1,6 +1,6 @@
 ﻿using System.Web;
 
-namespace Lindorff.Access.Web.Helpers
+namespace Gui.Helpers
 {
     public class CookieHelper
     {

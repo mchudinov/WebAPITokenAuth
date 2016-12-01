@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics;
+using System.IdentityModel.Services;
 using System.IdentityModel.Tokens;
+using System.IO;
 using System.Net.Http;
 using System.Web;
+using System.Xml;
 using Gui.Models;
 
 namespace Gui.Helpers
@@ -14,7 +18,7 @@ namespace Gui.Helpers
             return token == null || (DateTime.UtcNow < token.ValidFrom || DateTime.UtcNow > token.ValidTo);
         }
 
-        public static void SaveTokenInCache(SecurityToken token, string key)
+        private static void SaveObjectInCache(SecurityToken token, string key)
         {
             int expirationMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["KeyCacheExpirationMinutes"]);
             HttpRuntime.Cache.Add(key, token, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, expirationMinutes, 0), System.Web.Caching.CacheItemPriority.Normal, null);
@@ -86,6 +90,50 @@ namespace Gui.Helpers
             }
 
             return token;
+        }
+
+        private static SecurityToken GetTokenFromXml(string tokenXml)
+        {
+            if (string.IsNullOrEmpty(tokenXml))
+                return null;
+
+            var handlers = FederatedAuthentication.FederationConfiguration.IdentityConfiguration.SecurityTokenHandlers;
+            SecurityToken token;
+            try
+            {
+                using (StringReader stringReader = new StringReader(tokenXml))
+                using (XmlTextReader xmlReader = new XmlTextReader(stringReader))
+                {
+                    token = (SecurityToken)handlers.ReadToken(xmlReader);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return token;
+        }
+
+        public static SecurityToken GetTokenFromBootstrapContext(BootstrapContext bootstrapContext)
+        {
+            if (null != bootstrapContext?.SecurityToken)
+                return bootstrapContext.SecurityToken as SecurityToken;
+
+            if (!string.IsNullOrWhiteSpace(bootstrapContext?.Token))
+                return GetTokenFromXml(bootstrapContext.Token);
+
+            return null;
+        }
+
+        public static void StoreSecurityToken(SecurityToken token)
+        {
+            if (null == token)
+                return;
+
+            string key = SecurityTokenHelper.GetKey();
+            SecurityTokenHelper.SaveObjectInCache(token, key);
+            CookieHelper.SaveSessionCookie("token", key, HttpContext.Current);
+            Debug.WriteLine($"SecurityTokenReceived. SecurityToken ID: {token.Id}, key: {key}");
         }
     }
 }

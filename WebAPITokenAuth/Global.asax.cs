@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Web;
 using System.Web.Http;
 using System.Web.Routing;
+using Gui.Helpers;
 
 namespace Gui
 {
@@ -19,10 +20,11 @@ namespace Gui
 
         protected void Session_Start(object sender, EventArgs e)
         {
-            var principal = (ClaimsPrincipal)System.Web.HttpContext.Current.User;
+            var principal = (ClaimsPrincipal)HttpContext.Current.User;
             var identity = principal.Identity;
             var bootstrapContext = (BootstrapContext)principal.Identities.First().BootstrapContext;
-            Debug.WriteLine("Session_Start. Identity name:" + identity.Name + " IsAuthenticated:" + identity.IsAuthenticated);
+            SecurityTokenHelper.StoreSecurityToken(SecurityTokenHelper.GetTokenFromBootstrapContext(bootstrapContext));
+            Debug.WriteLine($"Session_Start. Identity name: {identity.Name}");
         }
     }
 }

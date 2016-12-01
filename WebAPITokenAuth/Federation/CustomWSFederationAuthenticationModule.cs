@@ -4,7 +4,6 @@ using System.IdentityModel.Services;
 using System.Web;
 using System.Web.Mvc;
 using Gui.Helpers;
-using Lindorff.Access.Web.Helpers;
 
 namespace Gui.Federation
 {
@@ -20,10 +19,8 @@ namespace Gui.Federation
 
         private void CustomAuthenticationModule_SecurityTokenReceived(object sender, SecurityTokenReceivedEventArgs e)
         {
-            string key = SecurityTokenHelper.GetKey();
-            SecurityTokenHelper.SaveTokenInCache(e.SecurityToken, key);
-            CookieHelper.SaveSessionCookie("token", key, HttpContext.Current);
-            Debug.WriteLine($"SecurityTokenReceived. SecurityToken ID: {e.SecurityToken.Id}, key: {key}");
+            SecurityTokenHelper.StoreSecurityToken(e.SecurityToken);
+            Debug.WriteLine($"SecurityTokenReceived. SecurityToken ID: {e.SecurityToken.Id}");
         }
 
         protected override void OnRedirectingToIdentityProvider(RedirectingToIdentityProviderEventArgs e)
