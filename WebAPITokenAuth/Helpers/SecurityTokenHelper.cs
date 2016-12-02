@@ -132,7 +132,7 @@ namespace Gui.Helpers
 
             string key = SecurityTokenHelper.GetKey();
             SecurityTokenHelper.SaveObjectInCache(token, key);
-            CookieHelper.SaveSessionCookie("token", key, HttpContext.Current);
+            CookieHelper.SaveSessionCookie("key", key, HttpContext.Current);
             Debug.WriteLine($"SecurityTokenReceived. SecurityToken ID: {token.Id}, key: {key}");
         }
     }

@@ -25,7 +25,7 @@ namespace Gui.Filters
             ((BaseApiController)controller).SecurityToken = token;
             //((BaseApiController)controller).TokenKey = key;
 
-            actionContext.Request.Properties.Add("token", token);
+            actionContext.Request.Properties.Add("key", token);
             return Task.FromResult<object>(null);
         }
     }
