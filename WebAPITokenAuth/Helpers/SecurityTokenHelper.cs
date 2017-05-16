@@ -53,7 +53,7 @@ namespace Gui.Helpers
             return authHeader.Parameter;
         }
 
-        public static SecurityToken GetTokenFromRequestMessage(HttpRequestMessage request, out ErrorCode? error)
+        public static SecurityToken GetTokenFromRequest(HttpRequestMessage request, out ErrorCode? error)
         {
             SecurityToken token = null;
             string key = GetKeyFromRequest(request, out error);

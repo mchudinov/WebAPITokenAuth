@@ -14,7 +14,7 @@ namespace Gui.Filters
         public override Task OnAuthorizationAsync(HttpActionContext actionContext, System.Threading.CancellationToken cancellationToken)
         {
             ErrorCode? errorCode;
-            SecurityToken token = SecurityTokenHelper.GetTokenFromRequestMessage(actionContext.Request, out errorCode);
+            SecurityToken token = SecurityTokenHelper.GetTokenFromRequest(actionContext.Request, out errorCode);
             if (null != errorCode)
             {
                 actionContext.Response = actionContext.Request.CreateResponse(errorCode.GetStatusCode(), new Error(errorCode));
