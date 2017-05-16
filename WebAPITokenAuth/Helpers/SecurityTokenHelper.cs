@@ -18,10 +18,10 @@ namespace Gui.Helpers
             return token == null || (DateTime.UtcNow < token.ValidFrom || DateTime.UtcNow > token.ValidTo);
         }
 
-        private static void SaveObjectInCache(SecurityToken token, string key)
+        private static void SaveObjectInCache(object obj, string key)
         {
             int expirationMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["KeyCacheExpirationMinutes"]);
-            HttpRuntime.Cache.Add(key, token, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, expirationMinutes, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+            HttpRuntime.Cache.Add(key, obj, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, expirationMinutes, 0), System.Web.Caching.CacheItemPriority.Normal, null);
         }
 
         private static SecurityToken GetTokenFromCache(string key)
@@ -107,7 +107,7 @@ namespace Gui.Helpers
                     token = (SecurityToken)handlers.ReadToken(xmlReader);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }
@@ -133,7 +133,7 @@ namespace Gui.Helpers
             string key = SecurityTokenHelper.GetKey();
             SecurityTokenHelper.SaveObjectInCache(token, key);
             CookieHelper.SaveSessionCookie("key", key, HttpContext.Current);
-            Debug.WriteLine($"SecurityTokenReceived. SecurityToken ID: {token.Id}, key: {key}");
+            Debug.WriteLine($"SecurityToken saved in cache. SecurityTokenID: {token.Id}, key: {key}");
         }
     }
 }
